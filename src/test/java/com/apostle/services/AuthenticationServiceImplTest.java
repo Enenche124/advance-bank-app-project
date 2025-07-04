@@ -17,12 +17,9 @@ public class AuthenticationServiceImplTest {
     @Autowired
     private AuthenticationServiceImpl authenticationService;
 
-    @Autowired
-    private UserRepository userRepository;
 
     @BeforeEach
     public void setUp(){
-        userRepository.deleteAll();
 
     }
 
