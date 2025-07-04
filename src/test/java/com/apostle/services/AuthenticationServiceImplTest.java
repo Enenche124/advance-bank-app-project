@@ -1,5 +1,7 @@
 package com.apostle.services;
 
+
+import com.apostle.data.repositories.UserRepository;
 import com.apostle.dtos.requests.RegisterRequest;
 import com.apostle.dtos.responses.RegisterResponses;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,14 +11,18 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-//@SpringBootTest
+@SpringBootTest
 public class AuthenticationServiceImplTest {
 
-//    @Autowired
+    @Autowired
     private AuthenticationServiceImpl authenticationService;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @BeforeEach
     public void setUp(){
+        userRepository.deleteAll();
 
     }
 

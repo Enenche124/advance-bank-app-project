@@ -7,6 +7,7 @@ import com.apostle.dtos.requests.RegisterRequest;
 import com.apostle.dtos.responses.LoginResponse;
 import com.apostle.dtos.responses.RegisterResponses;
 import jakarta.validation.Validator;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
@@ -16,16 +17,19 @@ public class AuthenticationServiceImpl implements AuthenticationService{
 
     private Validator validator;
     private final UserRepository userRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public AuthenticationServiceImpl(UserRepository userRepository){
+    public AuthenticationServiceImpl(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder){
 
         this.userRepository = userRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
 
     @Override
     public RegisterResponses register(RegisterRequest registerRequest) {
-        String inputPassword = registerRequest.getPassword();
+        String encodedPassword = bCryptPasswordEncoder.encode(registerRequest.getPassword());
+        System.out.println(encodedPassword);
 
         boolean emailExists = userRepository.findUserByEmail(registerRequest.getEmail()).isPresent();
         if (emailExists){
@@ -34,7 +38,7 @@ public class AuthenticationServiceImpl implements AuthenticationService{
 
         User user = new User();
         user.setEmail(registerRequest.getEmail());
-        user.setPassword(inputPassword);
+        user.setPassword(encodedPassword);
         user.setUsername(registerRequest.getUsername());
         userRepository.save(user);
         RegisterResponses registerResponses = new RegisterResponses();

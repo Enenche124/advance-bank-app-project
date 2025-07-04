@@ -1,4 +1,4 @@
 package com.apostle.exceptions;
 
-public class GloblaException {
+public class GlobalException {
 }
