@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-public class RegisterResponses {
+@AllArgsConstructor
+public class ResetPasswordResponse {
     private String message;
-    private boolean success;
 }
