@@ -1,5 +1,6 @@
 package com.apostle.services;
 
+import com.apostle.data.model.AccountType;
 import com.apostle.data.model.User;
 import com.apostle.data.repositories.UserRepository;
 import com.apostle.dtos.requests.LoginRequest;
@@ -31,14 +32,17 @@ public class AuthenticationServiceImpl implements AuthenticationService{
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JwtService jwtService;
 
+    private final BankAccountServiceImpl bankAccountService;
+
     public AuthenticationServiceImpl(Validator validator,
                                      UserRepository userRepository,
-                                     BCryptPasswordEncoder bCryptPasswordEncoder, JwtService jwtService){
+                                     BCryptPasswordEncoder bCryptPasswordEncoder, JwtService jwtService, BankAccountServiceImpl bankAccountService){
 
         this.validator = validator;
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.jwtService = jwtService;
+        this.bankAccountService = bankAccountService;
     }
 
 
@@ -59,6 +63,7 @@ public class AuthenticationServiceImpl implements AuthenticationService{
         User user = mapToRegisterRequest(registerRequest);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
+        bankAccountService.createAccountForUser(user, AccountType.SAVINGS);
 
         return mapToRegisterResponses();
     }
