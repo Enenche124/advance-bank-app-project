@@ -43,7 +43,7 @@ public class PasswordRecoveryServiceImplTest {
     @BeforeEach
     public void setUp() {
         passwordResetTokenRepository.deleteAll();
-        userRepository.deleteAll();
+//        userRepository.deleteAll();
 
     }
 
@@ -98,7 +98,7 @@ public class PasswordRecoveryServiceImplTest {
 
     @Test
     public void testResetPassword_failsForUsedToken(){
-        RegisterRequest registerRequest = createRegisterRequest("myemailu@gmail.com", "myuser", "MyPassword@2024");
+        RegisterRequest registerRequest = createRegisterRequest("myemailjohn@gmail.com", "myuser", "MyPassword@2024");
         authenticationService.register(registerRequest);
 
         ForgotPasswordRequest forgotPasswordRequest = new ForgotPasswordRequest();
