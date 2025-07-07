@@ -6,49 +6,77 @@ import com.apostle.dtos.requests.LoginRequest;
 import com.apostle.dtos.requests.RegisterRequest;
 import com.apostle.dtos.responses.LoginResponse;
 import com.apostle.dtos.responses.RegisterResponses;
+import com.apostle.exceptions.InvalidLoginException;
+import com.apostle.exceptions.UserAlreadyExistException;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
+
+import java.util.Optional;
+import java.util.Set;
+
+import static com.apostle.utils.Mapper.mapToRegisterRequest;
+import static com.apostle.utils.Mapper.mapToRegisterResponses;
 
 
-
+@Validated
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService{
 
-    private Validator validator;
+    private final Validator validator;
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final JwtService jwtService;
 
-    public AuthenticationServiceImpl(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder){
+    public AuthenticationServiceImpl(Validator validator,
+                                     UserRepository userRepository,
+                                     BCryptPasswordEncoder bCryptPasswordEncoder, JwtService jwtService){
 
+        this.validator = validator;
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.jwtService = jwtService;
     }
 
 
     @Override
     public RegisterResponses register(RegisterRequest registerRequest) {
-        String encodedPassword = bCryptPasswordEncoder.encode(registerRequest.getPassword());
-        System.out.println(encodedPassword);
+        Set<ConstraintViolation<RegisterRequest>> violations = validator.validate(registerRequest);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException(violations);
+        }
+
 
         boolean emailExists = userRepository.findUserByEmail(registerRequest.getEmail()).isPresent();
         if (emailExists){
-            throw new RuntimeException("Email already exists");
+            throw new UserAlreadyExistException("Email already exists");
         }
 
-        User user = new User();
-        user.setEmail(registerRequest.getEmail());
-        user.setPassword(encodedPassword);
-        user.setUsername(registerRequest.getUsername());
+
+        User user = mapToRegisterRequest(registerRequest);
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
-        RegisterResponses registerResponses = new RegisterResponses();
-        registerResponses.setMessage("User registered successfully");
-        registerResponses.setSuccess(true);
-        return registerResponses;
+
+        return mapToRegisterResponses();
     }
 
     @Override
     public LoginResponse login(LoginRequest loginRequest) {
-        return null;
+        String email = loginRequest.getEmail().toLowerCase();
+        Optional<User> optionalUser =  userRepository.findUserByEmail(email);
+        if (optionalUser.isEmpty()){
+            throw new InvalidLoginException("User with provided credential does not exist");
+        }
+
+        boolean passwordMatches = bCryptPasswordEncoder.matches(loginRequest.getPassword(), optionalUser.get().getPassword());
+        if (!passwordMatches) {
+            throw new InvalidLoginException("Invalid credentials");
+        }
+        String name = optionalUser.get().getUsername();
+        String token = jwtService.generateJwtToken(optionalUser.get().getEmail());
+        return new LoginResponse(token, name, "Logged in success", true);
     }
 }
