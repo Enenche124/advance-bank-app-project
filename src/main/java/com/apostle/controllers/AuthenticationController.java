@@ -1,5 +1,6 @@
 package com.apostle.controllers;
 
+import com.apostle.dtos.requests.LoginRequest;
 import com.apostle.dtos.requests.RegisterRequest;
 import com.apostle.services.AuthenticationService;
 import jakarta.validation.Valid;
@@ -21,6 +22,24 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest registerRequest) {
-        return ResponseEntity.ok(authenticationService.register(registerRequest));
+        try {
+            return ResponseEntity.ok(authenticationService.register(registerRequest));
+        }catch (Exception exception){
+            return ResponseEntity.badRequest().body(exception.getMessage());
+        }
+
     }
+
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest){
+        try {
+            return ResponseEntity.ok(authenticationService.login(loginRequest));
+        }catch (Exception exception){
+            return ResponseEntity.badRequest().body(exception.getMessage());
+        }
+    }
+
+
+
 }

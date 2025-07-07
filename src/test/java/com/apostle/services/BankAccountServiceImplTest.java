@@ -8,21 +8,23 @@ import com.apostle.dtos.requests.RegisterRequest;
 import com.apostle.dtos.responses.RegisterResponses;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SpringBootTest
 public class BankAccountServiceImplTest {
 
-    @Autowired
-    private BankAccountServiceImpl bankAccountService;
+  @Autowired
+   private AuthenticationServiceImpl authenticationService;
+  @Autowired
+   private BankAccountServiceImpl bankAccountService;
+  @Autowired
+   private UserRepository userRepository;
 
-    @Autowired
-    private AuthenticationServiceImpl authenticationService;
 
-    @Autowired
-    private UserRepository userRepository;
 
     private RegisterRequest createRegisterRequest(String email, String username, String password) {
         RegisterRequest request = new RegisterRequest();
@@ -34,7 +36,7 @@ public class BankAccountServiceImplTest {
 
     @Test
     public void testAccountCreation_works(){
-        RegisterRequest request = createRegisterRequest("john.doe1@example.com", "johndoe", "Password@2024");
+        RegisterRequest request = createRegisterRequest("john.doe11@example.com", "johndoe", "Password@2024");
         RegisterResponses registerResponses = authenticationService.register(request);
         assertNotNull(registerResponses);
         assertTrue(registerResponses.isSuccess());
