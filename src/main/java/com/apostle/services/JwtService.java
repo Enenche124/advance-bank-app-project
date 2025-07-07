@@ -1,6 +1,7 @@
 package com.apostle.services;
 
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -23,7 +24,7 @@ public class JwtService {
     public String generateJwtToken(String email){
         return Jwts.builder()
                 .setSubject(email)
-                .claim("role", "user")
+//                .claim("role", "user")
                 .claim("type", "access")
                 .setIssuedAt(new Date())
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
@@ -34,6 +35,14 @@ public class JwtService {
     public Key getSigningKey() {
         byte[] keyBytes = secret.getBytes();
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public Claims extractAllClaims(String token){
+        return Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 
 }
