@@ -4,6 +4,9 @@ import com.apostle.data.model.AccountType;
 import com.apostle.data.model.BankAccount;
 import com.apostle.data.model.User;
 import com.apostle.data.repositories.BankAccountRepository;
+import com.apostle.exceptions.InsufficientBalanceException;
+import com.apostle.exceptions.UserNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -30,6 +33,37 @@ public class BankAccountServiceImpl implements BankAccountService {
                 .build();
 
         return bankAccountRepository.save(account);
+    }
+
+    @Override
+    public BigDecimal getBalance(Long accountId) {
+        return getAccountById(accountId).getBalance();
+    }
+
+    @Override
+    @Transactional
+    public void credit(Long accountId, BigDecimal amount) {
+        BankAccount account = getAccountById(accountId);
+        if(account.getBalance().compareTo(amount) <= 0) {
+            throw new InsufficientBalanceException("amount cannot be less than 0");
+        }
+        account.setBalance(account.getBalance().add(amount));
+        bankAccountRepository.save(account);
+
+    }
+
+    @Override
+    public void debit(Long accountId, BigDecimal amount) {
+        BankAccount account = getAccountById(accountId);
+        if(account.getBalance().compareTo(amount) <= 0) {
+            throw new InsufficientBalanceException("Insufficient Balance");
+        }
+        account.setBalance();
+    }
+
+    @Override
+    public BankAccount getAccountById(Long accountId) {
+        return bankAccountRepository.findById(accountId).orElseThrow(() -> new UserNotFoundException("Account not found"));
     }
 
     private String generateUniqueAccountNumber() {
