@@ -39,5 +39,6 @@ public class BankAccountServiceImpl implements BankAccountService {
         } while (bankAccountRepository.existsByAccountNumber(accountNumber));
         return accountNumber;
     }
+
 }
 

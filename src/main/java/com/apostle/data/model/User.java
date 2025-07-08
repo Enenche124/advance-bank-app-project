@@ -14,6 +14,16 @@ public class User {
     private String email;
     private String password;
 
+    @Column(name = "profile_image_path")
+    private String profileImagePath;
+
+    public String getProfileImagePath() {
+        return profileImagePath;
+    }
+    public void setProfileImagePath(String profileImagePath) {
+        this.profileImagePath = profileImagePath;
+    }
+
     public Long getId() {
         return id;
     }

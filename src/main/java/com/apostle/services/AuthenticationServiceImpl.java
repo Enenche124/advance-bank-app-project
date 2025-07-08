@@ -1,6 +1,7 @@
 package com.apostle.services;
 
 import com.apostle.data.model.AccountType;
+import com.apostle.data.model.BankAccount;
 import com.apostle.data.model.User;
 import com.apostle.data.repositories.UserRepository;
 import com.apostle.dtos.requests.LoginRequest;
@@ -20,7 +21,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static com.apostle.utils.Mapper.mapToRegisterRequest;
-import static com.apostle.utils.Mapper.mapToRegisterResponses;
+//import static com.apostle.utils.Mapper.mapToRegisterResponses;
 
 
 @Validated
@@ -63,9 +64,13 @@ public class AuthenticationServiceImpl implements AuthenticationService{
         User user = mapToRegisterRequest(registerRequest);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
-        bankAccountService.createAccountForUser(user, AccountType.SAVINGS);
+        BankAccount createdAccount = bankAccountService.createAccountForUser(user, AccountType.SAVINGS);
+        RegisterResponses registerResponses = new RegisterResponses();
+        registerResponses.setMessage("User Registration Successful");
+        registerResponses.setSuccess(true);
+        registerResponses.setAccountNumber(createdAccount.getAccountNumber());
+        return registerResponses;
 
-        return mapToRegisterResponses();
     }
 
     @Override
