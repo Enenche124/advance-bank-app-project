@@ -113,6 +113,32 @@
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
 
+<!--        <dependency>-->
+<!--            <groupId>com.cloudinary</groupId>-->
+<!--            <artifactId>cloudinary-http44</artifactId>-->
+<!--            <version>1.33.0</version>-->
+<!--        </dependency>-->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.14</version>
+        </dependency>
+
+
+
+
+        <dependency>
+            <groupId>com.cloudinary</groupId>
+            <artifactId>cloudinary-http44</artifactId>
+            <version>1.33.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpclient</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
     </dependencies>
 
     <build>

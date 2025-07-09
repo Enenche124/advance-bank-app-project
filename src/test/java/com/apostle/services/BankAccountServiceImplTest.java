@@ -53,4 +53,11 @@ public class BankAccountServiceImplTest {
 
     }
 
+    @Test
+    public void testUserCanAddWalletAccount(){
+        RegisterRequest request = createRegisterRequest("jerrydoe11@example.com", "jerrydoe", "Password@2022");
+
+
+    }
+
 }

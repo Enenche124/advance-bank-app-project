@@ -6,8 +6,7 @@ import lombok.*;
 import java.math.BigDecimal;
 
 @Entity
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -20,6 +19,7 @@ public class BankAccount {
     @Column(unique = true, nullable = false, length = 10)
     private String accountNumber;
 
+    private String name;
     @Column(nullable = false)
     private BigDecimal balance;
 
