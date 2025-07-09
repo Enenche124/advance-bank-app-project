@@ -31,9 +31,11 @@ public class AuthenticationServiceImplTest {
     public void testRegisterSuccess() {
         RegisterRequest request = createRegisterRequest("john.doe1@example.com", "johndoe", "Password@2024");
         RegisterResponses response = authenticationService.register(request);
+        System.out.println(response.getAccountNumber());
         assertNotNull(response);
         assertTrue(response.isSuccess());
         assertEquals("User Registration Successful", response.getMessage());
+        assertNotNull(response.getAccountNumber());
     }
 
     @Test

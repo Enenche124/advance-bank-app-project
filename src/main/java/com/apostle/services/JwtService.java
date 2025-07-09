@@ -1,6 +1,7 @@
 package com.apostle.services;
 
 
+import com.apostle.data.model.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -21,10 +22,10 @@ public class JwtService {
     private String expiration;
 
 
-    public String generateJwtToken(String email){
+    public String generateJwtToken(String email, Role role){
         return Jwts.builder()
                 .setSubject(email)
-//                .claim("role", "user")
+                .claim("role", "ROLE_" + role.name())
                 .claim("type", "access")
                 .setIssuedAt(new Date())
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
