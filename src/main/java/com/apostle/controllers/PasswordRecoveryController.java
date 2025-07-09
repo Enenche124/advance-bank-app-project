@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/user")
+//@PreAuthorize("hasRole('USER')")
 public class PasswordRecoveryController {
 
     private final PasswordRecoveryService passwordRecoveryService;

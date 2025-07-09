@@ -85,8 +85,10 @@ public class AuthenticationServiceImpl implements AuthenticationService{
         if (!passwordMatches) {
             throw new InvalidLoginException("Invalid credentials");
         }
+
         String name = optionalUser.get().getUsername();
-        String token = jwtService.generateJwtToken(optionalUser.get().getEmail());
+        User user = optionalUser.get();
+        String token = jwtService.generateJwtToken(optionalUser.get().getEmail(), user.getRole() );
         return new LoginResponse(token, name, "Logged in success", true);
     }
 }

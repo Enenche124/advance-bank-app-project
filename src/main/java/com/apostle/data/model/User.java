@@ -17,6 +17,15 @@ public class User {
     @Column(name = "profile_image_path")
     private String profileImagePath;
 
+
+    private Role role;
+
+    public Role getRole() {
+        return role;
+    }
+    public void setRole(Role role) {
+        this.role = role;
+    }
     public String getProfileImagePath() {
         return profileImagePath;
     }

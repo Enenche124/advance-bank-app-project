@@ -1,6 +1,7 @@
 package com.apostle.utils;
 
 import com.apostle.data.model.BankAccount;
+import com.apostle.data.model.Role;
 import com.apostle.data.model.User;
 import com.apostle.dtos.requests.RegisterRequest;
 import com.apostle.dtos.responses.RegisterResponses;
@@ -12,6 +13,7 @@ public class Mapper {
         user.setEmail(registerRequest.getEmail().toLowerCase());
         user.setPassword(registerRequest.getPassword());
         user.setUsername(registerRequest.getUsername().toLowerCase());
+        user.setRole(Role.USER);
         return user;
     }
 
