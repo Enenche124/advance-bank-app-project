@@ -32,7 +32,7 @@ public class RegisterRequest {
     public void setEmail(@Email(message = "Email is invalid") @NotBlank @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "Please provide a valid email address") String email) {
         this.email = email;
     }
-return null;
+
     public @NotBlank(message = "Password is required") @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$", message = "Password must be at least 8 characters long and contain at least one digit, one lowercase, one uppercase, and one special character") String getPassword() {
         return password;
     }

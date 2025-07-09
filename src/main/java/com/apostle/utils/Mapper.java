@@ -1,8 +1,10 @@
 package com.apostle.utils;
 
+import com.apostle.data.model.Transaction;
 import com.apostle.data.model.User;
 import com.apostle.dtos.requests.RegisterRequest;
 import com.apostle.dtos.responses.RegisterResponses;
+import com.apostle.dtos.responses.TransactionResponse;
 
 public class Mapper {
 
@@ -20,5 +22,6 @@ public class Mapper {
         registerResponses.setSuccess(true);
         return registerResponses;
     }
+
 
 }

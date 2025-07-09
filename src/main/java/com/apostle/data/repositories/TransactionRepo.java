@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Repository
 public interface TransactionRepo extends JpaRepository<Transaction, Long> {
@@ -26,4 +27,6 @@ public interface TransactionRepo extends JpaRepository<Transaction, Long> {
            OR t.receiver.id = :accountId
     """)
     BigDecimal computeBalance(@Param("accountId") Long accountId);
+
+    List<Transaction> findAllBySenderIdOrReceiverId(Long accountId, Long accountId1);
 }

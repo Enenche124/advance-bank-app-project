@@ -53,12 +53,14 @@ public class BankAccountServiceImpl implements BankAccountService {
     }
 
     @Override
+    @Transactional
     public void debit(Long accountId, BigDecimal amount) {
         BankAccount account = getAccountById(accountId);
         if(account.getBalance().compareTo(amount) <= 0) {
             throw new InsufficientBalanceException("Insufficient Balance");
         }
-        account.setBalance();
+        account.setBalance(account.getBalance().add(amount));
+        bankAccountRepository.save(account);
     }
 
     @Override
