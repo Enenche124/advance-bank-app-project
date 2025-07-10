@@ -14,20 +14,42 @@ import java.math.BigDecimal;
 public class SystemAccountInitializer {
     private final BankAccountRepository bankAccountRepository;
 
+//    @PostConstruct
+//    public void createSystemAccountIfNotExists() {
+//        Long systemId = 0L;
+//        if(!bankAccountRepository.existsById(systemId)) {
+//            BankAccount systemAccount = BankAccount.builder()
+//                    .id(systemId)
+//                    .accountNumber("SYSTEM")
+//                    .balance(BigDecimal.ZERO)
+//                    .accountType(AccountType.SYSTEM)
+//                    .user(null)
+//                    .build();
+//            bankAccountRepository.save(systemAccount);
+//
+//        }
+//    }
+
     @PostConstruct
     public void createSystemAccountIfNotExists() {
-        Long systemId = 0L;
-        if(!bankAccountRepository.existsById(systemId)) {
-            BankAccount systemAccount = BankAccount.builder()
-                    .id(systemId)
-                    .accountNumber("SYSTEM")
-                    .balance(BigDecimal.ZERO)
-                    .accountType(AccountType.SYSTEM)
-                    .user(null)
-                    .build();
-            bankAccountRepository.save(systemAccount);
-
+        try {
+            Long systemId = 0L;
+            if (!bankAccountRepository.existsById(systemId)) {
+                BankAccount systemAccount = BankAccount.builder()
+                        .id(systemId)
+                        .accountNumber("SYSTEM")
+                        .name("System Account")
+                        .balance(BigDecimal.ZERO)
+                        .accountType(AccountType.SYSTEM)
+                        .user(null)  // Should be fine if DB allows null
+                        .build();
+                bankAccountRepository.save(systemAccount);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to initialize system account", e);
         }
     }
+
 
 }
