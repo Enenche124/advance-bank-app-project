@@ -8,6 +8,7 @@ import com.apostle.data.repositories.BankAccountRepository;
 import com.apostle.data.repositories.UserRepository;
 import com.apostle.dtos.requests.AddAccountRequest;
 import com.apostle.dtos.responses.AddAccountResponse;
+import com.apostle.dtos.responses.BalanceResponse;
 import com.apostle.exceptions.InsufficientBalanceException;
 import com.apostle.exceptions.UserNotFoundException;
 import jakarta.transaction.Transactional;
@@ -22,11 +23,17 @@ public class BankAccountServiceImpl implements BankAccountService {
 
     private final BankAccountRepository bankAccountRepository;
     private final UserRepository userRepository;
+    public static final Long SYSTEM_ACCOUNT_ID = 0L;
 
     public BankAccountServiceImpl(BankAccountRepository bankAccountRepository, UserRepository userRepository) {
         this.bankAccountRepository = bankAccountRepository;
         this.userRepository = userRepository;
     }
+
+    @Override
+    public BankAccount getSystemAccount() {
+        return bankAccountRepository.findByAccountNumber("SYSTEM")
+                .orElseThrow(() -> new RuntimeException("System account not found"));    }
 
     @Override
     public BankAccount createAccountForUser(User user, AccountType accountType) {
@@ -61,9 +68,9 @@ public class BankAccountServiceImpl implements BankAccountService {
     }
 
     @Override
-    public BigDecimal getBalance(Long accountId) {
-        return getAccountById(accountId).getBalance();
-    }
+    public BalanceResponse getBalance(Long accountId) {
+        BankAccount account = getAccountById(accountId);
+        return new BalanceResponse(account.getAccountNumber(), account.getBalance());    }
 
     @Override
     @Transactional

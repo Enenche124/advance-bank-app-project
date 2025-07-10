@@ -1,8 +1,5 @@
 package com.apostle.data.model;
 
-import com.apostle.data.model.BankAccount;
-import com.apostle.data.model.TransactionStatus;
-import com.apostle.data.model.TransactionType;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -17,6 +14,7 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long transactionId;
 
+    // Read-only mapping to access sender/receiver IDs without conflicting with @JoinColumn
     @Column(name = "sender_id", insertable = false, updatable = false)
     private Long senderId;
 
@@ -41,7 +39,6 @@ public class Transaction {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 16)
     private TransactionType type;
-
 
     @Column(length = 255)
     private String note;

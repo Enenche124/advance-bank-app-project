@@ -1,5 +1,6 @@
 package com.apostle.services;
 
+import com.apostle.data.model.BankAccount;
 import com.apostle.data.model.Transaction;
 import com.apostle.data.model.TransactionStatus;
 import com.apostle.data.model.TransactionType;
@@ -7,6 +8,7 @@ import com.apostle.data.repositories.TransactionRepo;
 import com.apostle.dtos.requests.DepositRequest;
 import com.apostle.dtos.requests.SendMoneyRequest;
 import com.apostle.dtos.responses.TransactionResponse;
+import com.apostle.exceptions.TransactionNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,12 +28,14 @@ public class TransactionServiceImpl implements TransactionService {
 
 
     @Override
-    public TransactionResponse deposit(DepositRequest request) {
+    public TransactionResponse deposit(DepositRequest  request) {
         bankService.credit(request.receiverId(),request.amount());
+        BankAccount system = bankService.getSystemAccount();
+        BankAccount receiverAccount = bankService.getAccountById(request.receiverId());
 
         Transaction transaction = new Transaction();
-        transaction.setSenderId(SYSTEM_ACCOUNT_ID);
-        transaction.setReceiverId(request.receiverId());
+        transaction.setSender(system);
+        transaction.setReceiver(receiverAccount);
         transaction.setAmount(request.amount());
         transaction.setType(TransactionType.CREDIT);
         transaction.setStatus(TransactionStatus.SUCCESS);
@@ -41,8 +45,8 @@ public class TransactionServiceImpl implements TransactionService {
 
         return new TransactionResponse(
             transaction.getTransactionId(),
-            transaction.getSenderId(),
-            transaction.getReceiverId(),
+            transaction.getSender() != null ? transaction.getSender().getId() : null,
+            transaction.getReceiver() != null ? transaction.getReceiver().getId() : null,
             transaction.getAmount(),
             transaction.getType(),
             transaction.getStatus(),
@@ -62,9 +66,13 @@ public class TransactionServiceImpl implements TransactionService {
 
         LocalDateTime now = LocalDateTime.now();
 
+
+        BankAccount senderAccount = bankService.getAccountById(request.senderId());
+        BankAccount receiverAccount = bankService.getAccountById(request.receiverId());
+
         Transaction senderTransaction = new Transaction();
-        senderTransaction.setSenderId(SYSTEM_ACCOUNT_ID);
-        senderTransaction.setReceiverId(request.receiverId());
+        senderTransaction.setSender(senderAccount);
+        senderTransaction.setReceiver(receiverAccount);
         senderTransaction.setAmount(request.amount());
         senderTransaction.setType(TransactionType.DEBIT);
         senderTransaction.setStatus(TransactionStatus.SUCCESS);
@@ -72,32 +80,19 @@ public class TransactionServiceImpl implements TransactionService {
         senderTransaction.setTimestamp(now);
         transactionRepo.save(senderTransaction);
 
-        Transaction receiverTransaction = getTransaction(request, now);
-        transactionRepo.save(receiverTransaction);
-
-        return new TransactionResponse(
-                senderTransaction.getTransactionId(),
-                senderTransaction.getSenderId(),
-                senderTransaction.getReceiverId(),
-                senderTransaction.getAmount(),
-                senderTransaction.getType(),
-                senderTransaction.getStatus(),
-                senderTransaction.getNote(),
-                senderTransaction.getTimestamp()
-        );
-    }
-
-    private static Transaction getTransaction(SendMoneyRequest request, LocalDateTime now) {
         Transaction receiverTransaction = new Transaction();
-        receiverTransaction.setReceiverId(request.receiverId());
-        receiverTransaction.setSenderId(SYSTEM_ACCOUNT_ID);
+        receiverTransaction.setSender(senderAccount);
+        receiverTransaction.setReceiver(receiverAccount);
         receiverTransaction.setAmount(request.amount());
         receiverTransaction.setType(TransactionType.CREDIT);
         receiverTransaction.setStatus(TransactionStatus.SUCCESS);
         receiverTransaction.setNote("Received from user " + request.senderId() + ": " + request.note());
         receiverTransaction.setTimestamp(now);
-        return receiverTransaction;
+        transactionRepo.save(receiverTransaction);
+
+        return mapToResponse(senderTransaction);
     }
+
 
     @Override
     public List<TransactionResponse> getTransactionsForAccount(Long accountId) {
@@ -112,15 +107,16 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public TransactionResponse getTransactionById(Long transactionId) {
-        return null;
+        Transaction transaction = transactionRepo.findById(transactionId).orElseThrow(() -> new TransactionNotFoundException("Transaction not found"));
+        return mapToResponse(transaction);
     }
 
 
     private  TransactionResponse mapToResponse(Transaction transaction) {
         return new TransactionResponse(
                 transaction.getTransactionId(),
-                transaction.getSenderId(),
-                transaction.getReceiverId(),
+                transaction.getSender() != null ? transaction.getSender().getId() : null,
+                transaction.getReceiver() != null ? transaction.getReceiver().getId() : null,
                 transaction.getAmount(),
                 transaction.getType(),
                 transaction.getStatus(),

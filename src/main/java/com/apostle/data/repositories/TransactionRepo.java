@@ -28,5 +28,5 @@ public interface TransactionRepo extends JpaRepository<Transaction, Long> {
     """)
     BigDecimal computeBalance(@Param("accountId") Long accountId);
 
-    List<Transaction> findAllBySenderIdOrReceiverId(Long accountId, Long accountId1);
+    List<Transaction> findAllBySenderIdOrReceiverId(Long senderId, Long receiverId);
 }
