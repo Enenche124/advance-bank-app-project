@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "bank_account")
 public class BankAccount {
 
     @Id
@@ -23,6 +24,7 @@ public class BankAccount {
     @Column(nullable = false)
     private BigDecimal balance;
 
+    @Column(name = "account_type", nullable = false, columnDefinition = "VARCHAR(16)")
     @Enumerated(EnumType.STRING)
     private AccountType accountType;
 
