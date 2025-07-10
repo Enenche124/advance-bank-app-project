@@ -1,7 +1,20 @@
 package com.apostle.dtos.responses;
 
-public class TransactionResponse {
-    private Long transactionId;
-    private Long receiverId;
+import com.apostle.data.model.TransactionStatus;
+import com.apostle.data.model.TransactionType;
 
-}
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+public record TransactionResponse (
+        Long transactionId,
+        Long senderId,
+        Long receiverId,
+        BigDecimal amount,
+        TransactionType type,
+        TransactionStatus status,
+        String note,
+        LocalDateTime timeStamp
+
+
+) {}

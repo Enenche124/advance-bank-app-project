@@ -4,11 +4,6 @@ import com.apostle.data.model.AccountType;
 import com.apostle.data.model.BankAccount;
 import com.apostle.data.model.User;
 import com.apostle.data.repositories.BankAccountRepository;
-import com.apostle.data.repositories.UserRepository;
-import com.apostle.dtos.requests.AddAccountRequest;
-import com.apostle.dtos.responses.AddAccountResponse;
-import com.apostle.exceptions.UserNotFoundException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -18,11 +13,9 @@ import java.util.Random;
 public class BankAccountServiceImpl implements BankAccountService {
 
     private final BankAccountRepository bankAccountRepository;
-    private final UserRepository userRepository;
 
-    public BankAccountServiceImpl(BankAccountRepository bankAccountRepository, UserRepository userRepository) {
+    public BankAccountServiceImpl(BankAccountRepository bankAccountRepository) {
         this.bankAccountRepository = bankAccountRepository;
-        this.userRepository = userRepository;
     }
 
     @Override
@@ -39,23 +32,6 @@ public class BankAccountServiceImpl implements BankAccountService {
         return bankAccountRepository.save(account);
     }
 
-    @Override
-    public AddAccountResponse createAccount(AddAccountRequest addAccountRequest) {
-        String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findUserByEmail(currentUserEmail).orElseThrow(() -> new UserNotFoundException("User not found"));
-        String accountNumber = generateUniqueAccountNumber();
-
-        BankAccount account =  new BankAccount();
-        account.setName(addAccountRequest.getName());
-        account.setUser(user);
-        account.setBalance(BigDecimal.ZERO);
-        account.setAccountNumber(accountNumber);
-
-        bankAccountRepository.save(account);
-
-        return new AddAccountResponse(accountNumber, addAccountRequest.getName(),  BigDecimal.ZERO);
-    }
-
     private String generateUniqueAccountNumber() {
         String accountNumber;
         do {
@@ -63,6 +39,5 @@ public class BankAccountServiceImpl implements BankAccountService {
         } while (bankAccountRepository.existsByAccountNumber(accountNumber));
         return accountNumber;
     }
-
 }
 
