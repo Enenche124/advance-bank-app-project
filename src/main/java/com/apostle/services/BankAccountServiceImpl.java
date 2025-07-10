@@ -7,7 +7,9 @@ import com.apostle.data.repositories.BankAccountRepository;
 import com.apostle.data.repositories.UserRepository;
 import com.apostle.dtos.requests.AddAccountRequest;
 import com.apostle.dtos.responses.AddAccountResponse;
+import com.apostle.exceptions.InsufficientBalanceException;
 import com.apostle.exceptions.UserNotFoundException;
+import jakarta.transaction.Transactional;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -45,7 +47,7 @@ public class BankAccountServiceImpl implements BankAccountService {
         User user = userRepository.findUserByEmail(currentUserEmail).orElseThrow(() -> new UserNotFoundException("User not found"));
         String accountNumber = generateUniqueAccountNumber();
 
-        BankAccount account =  new BankAccount();
+        BankAccount account = new BankAccount();
         account.setName(addAccountRequest.getName());
         account.setUser(user);
         account.setBalance(BigDecimal.ZERO);
@@ -53,7 +55,40 @@ public class BankAccountServiceImpl implements BankAccountService {
 
         bankAccountRepository.save(account);
 
-        return new AddAccountResponse(accountNumber, addAccountRequest.getName(),  BigDecimal.ZERO);
+        return new AddAccountResponse(accountNumber, addAccountRequest.getName(), BigDecimal.ZERO);
+    }
+
+    @Override
+    public BigDecimal getBalance(Long accountId) {
+        return getAccountById(accountId).getBalance();
+    }
+
+    @Override
+    @Transactional
+    public void credit(Long accountId, BigDecimal amount) {
+        BankAccount account = getAccountById(accountId);
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new InsufficientBalanceException("amount must be greater than 0");
+        }
+        account.setBalance(account.getBalance().add(amount));
+        bankAccountRepository.save(account);
+    }
+
+    @Override
+    @Transactional
+    public void debit(Long accountId, BigDecimal amount) {
+        BankAccount account = getAccountById(accountId);
+        if (account.getBalance().compareTo(amount) < 0) {
+            throw new InsufficientBalanceException("Insufficient Balance");
+        }
+        account.setBalance(account.getBalance().subtract(amount));
+        bankAccountRepository.save(account);
+    }
+
+    @Override
+    public BankAccount getAccountById(Long accountId) {
+        return bankAccountRepository.findById(accountId)
+                .orElseThrow(() -> new UserNotFoundException("Account not found"));
     }
 
     private String generateUniqueAccountNumber() {
@@ -63,6 +98,4 @@ public class BankAccountServiceImpl implements BankAccountService {
         } while (bankAccountRepository.existsByAccountNumber(accountNumber));
         return accountNumber;
     }
-
 }
-

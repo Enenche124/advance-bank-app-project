@@ -5,6 +5,7 @@ import com.apostle.data.model.Role;
 import com.apostle.data.model.User;
 import com.apostle.dtos.requests.RegisterRequest;
 import com.apostle.dtos.responses.RegisterResponses;
+import com.apostle.dtos.responses.TransactionResponse;
 
 public class Mapper {
 
@@ -24,5 +25,6 @@ public class Mapper {
 //        registerResponses.setAccountNumber();
 //        return registerResponses;
 //    }
+
 
 }
