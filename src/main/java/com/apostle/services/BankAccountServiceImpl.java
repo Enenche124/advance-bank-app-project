@@ -21,11 +21,17 @@ public class BankAccountServiceImpl implements BankAccountService {
 
     private final BankAccountRepository bankAccountRepository;
     private final UserRepository userRepository;
+    public static final Long SYSTEM_ACCOUNT_ID = 0L;
 
     public BankAccountServiceImpl(BankAccountRepository bankAccountRepository, UserRepository userRepository) {
         this.bankAccountRepository = bankAccountRepository;
         this.userRepository = userRepository;
     }
+
+    @Override
+    public BankAccount getSystemAccount() {
+        return bankAccountRepository.findByAccountNumber("SYSTEM")
+                .orElseThrow(() -> new RuntimeException("System account not found"));    }
 
     @Override
     public BankAccount createAccountForUser(User user, AccountType accountType) {

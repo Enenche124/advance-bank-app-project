@@ -9,10 +9,14 @@ import com.apostle.dtos.responses.AddAccountResponse;
 import java.math.BigDecimal;
 
 public interface BankAccountService {
+    BankAccount getSystemAccount();
     BankAccount createAccountForUser(User user, AccountType accountType);
     AddAccountResponse createAccount(AddAccountRequest addAccountRequest);
     BigDecimal getBalance(Long accountId);
     void credit(Long accountId, BigDecimal amount);
     void debit(Long accountId, BigDecimal amount);
     BankAccount getAccountById(Long accountId);
+
+
+
 }

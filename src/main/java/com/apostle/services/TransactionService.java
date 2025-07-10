@@ -1,5 +1,6 @@
 package com.apostle.services;
 
+import com.apostle.data.model.BankAccount;
 import com.apostle.dtos.requests.DepositRequest;
 import com.apostle.dtos.requests.SendMoneyRequest;
 import com.apostle.dtos.requests.WithdrawalRequest;

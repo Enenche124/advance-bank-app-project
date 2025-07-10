@@ -17,7 +17,7 @@ public class SystemAccountInitializer {
     @PostConstruct
     public void createSystemAccountIfNotExists() {
         Long systemId = 0L;
-        if(!bankAccountRepository.existsById(systemId)) {
+        if(!bankAccountRepository.existsByAccountNumber("SYSTEM")) {
             BankAccount systemAccount = BankAccount.builder()
                     .id(systemId)
                     .accountNumber("SYSTEM")

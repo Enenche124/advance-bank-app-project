@@ -17,12 +17,6 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long transactionId;
 
-    @Column(nullable = true)
-    private Long senderId;
-
-    @Column(nullable = true)
-    private Long receiverId;
-
     @ManyToOne
     @JoinColumn(name = "sender_id", referencedColumnName = "id", nullable = false)
     private BankAccount sender;
