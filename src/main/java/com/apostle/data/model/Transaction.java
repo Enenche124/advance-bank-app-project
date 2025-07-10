@@ -17,10 +17,10 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long transactionId;
 
-    @Column(nullable = true)
+    @Column(name = "sender_id", insertable = false, updatable = false)
     private Long senderId;
 
-    @Column(nullable = true)
+    @Column(name = "receiver_id", insertable = false, updatable = false)
     private Long receiverId;
 
     @ManyToOne
@@ -41,6 +41,7 @@ public class Transaction {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 16)
     private TransactionType type;
+
 
     @Column(length = 255)
     private String note;
