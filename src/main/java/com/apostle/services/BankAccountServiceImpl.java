@@ -7,6 +7,7 @@ import com.apostle.data.repositories.BankAccountRepository;
 import com.apostle.data.repositories.UserRepository;
 import com.apostle.dtos.requests.AddAccountRequest;
 import com.apostle.dtos.responses.AddAccountResponse;
+import com.apostle.dtos.responses.BalanceResponse;
 import com.apostle.exceptions.InsufficientBalanceException;
 import com.apostle.exceptions.UserNotFoundException;
 import jakarta.transaction.Transactional;
@@ -65,9 +66,9 @@ public class BankAccountServiceImpl implements BankAccountService {
     }
 
     @Override
-    public BigDecimal getBalance(Long accountId) {
-        return getAccountById(accountId).getBalance();
-    }
+    public BalanceResponse getBalance(Long accountId) {
+        BankAccount account = getAccountById(accountId);
+        return new BalanceResponse(account.getAccountNumber(), account.getBalance());    }
 
     @Override
     @Transactional

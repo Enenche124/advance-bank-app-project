@@ -1,5 +1,6 @@
 package com.apostle.controllers;
 
+import com.apostle.data.repositories.TransactionRepo;
 import com.apostle.dtos.requests.DepositRequest;
 import com.apostle.dtos.requests.SendMoneyRequest;
 import com.apostle.dtos.responses.TransactionResponse;
@@ -19,6 +20,7 @@ import java.util.List;
 public class TransactionController {
 
     private final TransactionService transactionService;
+    private final TransactionRepo transactionRepo;
 
 
     @PostMapping("/deposit")
@@ -47,4 +49,7 @@ public class TransactionController {
         List<TransactionResponse> responses = transactionService.getTransactionsForAccount(accountId);
         return ResponseEntity.ok(responses);
     }
+
+
+
 }

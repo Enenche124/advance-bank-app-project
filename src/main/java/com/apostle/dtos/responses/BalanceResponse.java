@@ -3,6 +3,6 @@ package com.apostle.dtos.responses;
 import java.math.BigDecimal;
 
 public record BalanceResponse(
-        Long accountId,
+        String accountId,
         BigDecimal balance
 ) { }
