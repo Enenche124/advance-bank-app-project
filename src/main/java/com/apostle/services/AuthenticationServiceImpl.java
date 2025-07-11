@@ -2,6 +2,7 @@ package com.apostle.services;
 
 import com.apostle.data.model.AccountType;
 import com.apostle.data.model.BankAccount;
+import com.apostle.data.model.Role;
 import com.apostle.data.model.User;
 import com.apostle.data.repositories.UserRepository;
 import com.apostle.dtos.requests.LoginRequest;
@@ -21,7 +22,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import static com.apostle.utils.Mapper.mapToRegisterRequest;
-//import static com.apostle.utils.Mapper.mapToRegisterResponses;
 
 
 @Validated
@@ -54,7 +54,6 @@ public class AuthenticationServiceImpl implements AuthenticationService{
             throw new ConstraintViolationException(violations);
         }
 
-
         boolean emailExists = userRepository.findUserByEmail(registerRequest.getEmail()).isPresent();
         if (emailExists){
             throw new UserAlreadyExistException("Email already exists");
@@ -64,6 +63,7 @@ public class AuthenticationServiceImpl implements AuthenticationService{
         User user = mapToRegisterRequest(registerRequest);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
+        System.out.println("USER IS HERE: " + user.getRole());
         BankAccount createdAccount = bankAccountService.createAccountForUser(user, AccountType.SAVINGS);
         RegisterResponses registerResponses = new RegisterResponses();
         registerResponses.setMessage("User Registration Successful");

@@ -7,14 +7,14 @@ import com.apostle.dtos.requests.RegisterRequest;
 import com.apostle.dtos.responses.RegisterResponses;
 import com.apostle.dtos.responses.TransactionResponse;
 
-public class Mapper {
+public class  Mapper {
 
     public static User mapToRegisterRequest(RegisterRequest registerRequest) {
         User user = new User();
         user.setEmail(registerRequest.getEmail().toLowerCase());
         user.setPassword(registerRequest.getPassword());
         user.setUsername(registerRequest.getUsername().toLowerCase());
-        user.setRole(Role.USER);
+        user.setRole(Role.CUSTOMER);
         return user;
     }
 

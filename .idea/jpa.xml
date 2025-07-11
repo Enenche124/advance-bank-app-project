@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="JpaBuddyIdeaProjectConfig">
+  <component name="JpaBuddyIdeaProjectConfig" ddlLastScriptDirectoryPath="">
     <option name="reLastEntityCreationPackage" value="src/main/java/com/apostle" />
     <option name="reverseEngineeringLastDbConnectionId" value="d534ee4a-70aa-4dfc-9ed9-f830cca8be0f" />
   </component>

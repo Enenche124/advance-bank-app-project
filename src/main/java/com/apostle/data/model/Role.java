@@ -2,6 +2,7 @@ package com.apostle.data.model;
 
 public enum Role {
     ADMIN,
-    USER,
+    MANAGER,
+    WORKER,
     CUSTOMER
 }
